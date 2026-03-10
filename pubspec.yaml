@@ -1,10 +1,13 @@
 name: clean_arch
-description: A sample command-line application.
-version: 1.0.0
+description: Clean architecture generator for Flutter projects
+version: 0.0.1
 # repository: https://github.com/my_org/my_repo
 
 environment:
   sdk: ^3.8.1
+
+executables:
+  clean_arch:
 
 # Add regular dependencies here.
 dependencies:
