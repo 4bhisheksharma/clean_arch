@@ -1,34 +1,33 @@
-import 'package:clean_arch/commands/init_command.dart';
 import 'package:clean_arch/commands/feature_command.dart';
+import 'package:clean_arch/commands/init_command.dart';
 
 void main(List<String> args) {
-
   if (args.isEmpty) {
-    print("Usage:");
-    print("clean_arch init");
-    print("clean_arch feature <name>");
+    _printUsage();
     return;
   }
 
   final command = args[0];
 
   switch (command) {
-
-    case "init":
+    case 'init':
       runInit();
-      break;
 
-    case "feature":
+    case 'feature':
       if (args.length < 2) {
-        print("Please provide feature name");
+        print('Usage: clean_arch feature <name>');
         return;
       }
-
-      final feature = args[1];
-      runFeature(feature);
-      break;
+      runFeature(args[1]);
 
     default:
-      print("Unknown command");
+      print("Unknown command: '$command'");
+      _printUsage();
   }
+}
+
+void _printUsage() {
+  print('Usage:');
+  print('  clean_arch init');
+  print('  clean_arch feature <name>');
 }

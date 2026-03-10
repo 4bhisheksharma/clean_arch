@@ -1,7 +1,11 @@
+import '../templates/templates.dart';
 import '../utils/file_helper.dart';
 import '../utils/logger.dart';
-import '../templates/templates.dart';
 
+/// Scaffolds the full Clean Architecture core layer inside `lib/core/`.
+///
+/// Creates every standard sub-directory and writes a starter `.dart` file
+/// into each one so the directories are never empty.
 void generateArchitecture() {
   logInfo("Initializing Clean Architecture...");
 

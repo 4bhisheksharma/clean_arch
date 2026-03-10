@@ -1,7 +1,12 @@
 name: clean_arch
-description: Clean architecture generator for Flutter projects
-version: 0.0.1
-# repository: https://github.com/my_org/my_repo
+description: >-
+  A command-line tool that scaffolds Flutter projects following Clean
+  Architecture — generates the full core layer and feature modules with
+  boilerplate files in one command.
+version: 1.0.0
+repository: https://github.com/4bhisheksharma/clean_arch
+homepage: https://github.com/4bhisheksharma/clean_arch
+issue_tracker: https://github.com/4bhisheksharma/clean_arch/issues
 
 environment:
   sdk: ^3.8.1
@@ -9,9 +14,7 @@ environment:
 executables:
   clean_arch:
 
-# Add regular dependencies here.
-dependencies:
-  # path: ^1.8.0
+dependencies: {}
 
 dev_dependencies:
   lints: ^5.0.0

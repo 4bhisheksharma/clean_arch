@@ -1,7 +1,12 @@
+import '../templates/templates.dart';
 import '../utils/file_helper.dart';
 import '../utils/logger.dart';
-import '../templates/templates.dart';
 
+/// Scaffolds a complete Clean Architecture feature module named [feature]
+/// inside `lib/features/[feature]/`.
+///
+/// Generates the `data`, `domain`, and `presentation` layers, each with
+/// appropriate starter files.
 void generateFeature(String feature) {
   logInfo("Generating feature: $feature");
 
