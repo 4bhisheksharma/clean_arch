@@ -19,3 +19,8 @@ void createFile(String path, String content) {
     logCreate(path);
   }
 }
+
+void createDirectoryWithFile(String dirPath, String fileName, String content) {
+  createDirectory(dirPath);
+  createFile('$dirPath/$fileName', content);
+}

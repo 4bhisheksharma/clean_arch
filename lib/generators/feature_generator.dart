@@ -1,23 +1,74 @@
 import '../utils/file_helper.dart';
 import '../utils/logger.dart';
+import '../templates/templates.dart';
 
 void generateFeature(String feature) {
-
   logInfo("Generating feature: $feature");
 
   final base = "lib/features/$feature";
 
-  createDirectory("$base/data/datasources");
-  createDirectory("$base/data/models");
-  createDirectory("$base/data/repositories");
+  createDirectoryWithFile(
+    "$base/data/datasources",
+    "${feature}_remote_datasource.dart",
+    featureRemoteDatasourceTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/data/datasources",
+    "${feature}_local_datasource.dart",
+    featureLocalDatasourceTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/data/models",
+    "${feature}_model.dart",
+    featureModelTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/data/repositories",
+    "${feature}_repository_impl.dart",
+    featureRepositoryImplTemplate(feature),
+  );
 
-  createDirectory("$base/domain/entities");
-  createDirectory("$base/domain/repositories");
-  createDirectory("$base/domain/usecases");
+  createDirectoryWithFile(
+    "$base/domain/entities",
+    "${feature}_entity.dart",
+    featureEntityTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/domain/repositories",
+    "${feature}_repository.dart",
+    featureRepositoryTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/domain/usecases",
+    "get_${feature}_usecase.dart",
+    featureUsecaseTemplate(feature),
+  );
 
-  createDirectory("$base/presentation/bloc");
-  createDirectory("$base/presentation/pages");
-  createDirectory("$base/presentation/widgets");
+  createDirectoryWithFile(
+    "$base/presentation/bloc",
+    "${feature}_bloc.dart",
+    featureBlocTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/presentation/bloc",
+    "${feature}_event.dart",
+    featureEventTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/presentation/bloc",
+    "${feature}_state.dart",
+    featureStateTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/presentation/pages",
+    "${feature}_page.dart",
+    featurePageTemplate(feature),
+  );
+  createDirectoryWithFile(
+    "$base/presentation/widgets",
+    "${feature}_card.dart",
+    featureWidgetTemplate(feature),
+  );
 
   logSuccess("Feature '$feature' generated.");
 }
