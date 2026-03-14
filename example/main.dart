@@ -1,25 +1,29 @@
 // This example shows how to use clean_arch programmatically.
 //
-// In normal use you run the tool from the command line:
-//
-//   dart pub global activate clean_arch
-//
-//   # Scaffold the full core layer inside the current Flutter project:
+// In normal CLI usage:
 //   clean_arch init
-//
-//   # Generate a feature module called "auth":
+//   clean_arch normal init
 //   clean_arch feature auth
+//   clean_arch normal feature auth
 
 import 'package:clean_arch/generators/architecture_generator.dart';
 import 'package:clean_arch/generators/feature_generator.dart';
 
-void main() {
-  // Generate the base Clean Architecture skeleton.
-  // Creates lib/core/** with starter files for config, DI, errors, theme, etc.
-  generateArchitecture();
+void main(List<String> args) {
+  final useNormalArchitecture = args.contains('--normal');
 
-  // Generate a feature module.
-  // Creates lib/features/auth/** with entity, model, repository,
-  // datasources, usecase, bloc, page, and widget files.
-  generateFeature('auth');
+  if (useNormalArchitecture) {
+    // Creates core/widgets, core/utils, core/controllers, core/helper,
+    // core/services, core/theme and starter auth/home feature folders.
+    generateStandardArchitecture();
+
+    // Creates features/profile/{model,services,provider,screens}/...
+    generateFeature('profile', architectureType: 'normal');
+  } else {
+    // Creates clean architecture core structure.
+    generateArchitecture();
+
+    // Creates clean architecture feature layers.
+    generateFeature('auth', architectureType: 'clean');
+  }
 }

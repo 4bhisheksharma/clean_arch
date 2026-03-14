@@ -1,4 +1,5 @@
 import '../templates/templates.dart';
+import 'feature_generator.dart';
 import '../utils/file_helper.dart';
 import '../utils/logger.dart';
 
@@ -87,4 +88,48 @@ void generateArchitecture() {
   createDirectory("lib/features");
 
   logSuccess("Clean architecture initialized.");
+}
+
+/// Scaffolds a standard Flutter folder architecture inside `lib/`.
+///
+/// Creates shared `core` and starter `features` modules.
+void generateStandardArchitecture() {
+  logInfo('Initializing Normal Folder Architecture...');
+
+  createDirectoryWithFile(
+    'lib/core/widgets',
+    'app_button.dart',
+    standardCoreWidgetTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/utils',
+    'app_utils.dart',
+    standardCoreUtilsTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/controllers',
+    'app_controller.dart',
+    standardCoreControllerTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/helper',
+    'app_helper.dart',
+    standardCoreHelperTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/services',
+    'app_service.dart',
+    standardCoreServiceTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/theme',
+    'app_theme.dart',
+    standardCoreThemeTemplate,
+  );
+
+  createDirectory('lib/features');
+  generateFeature('auth', architectureType: 'normal');
+  generateFeature('home', architectureType: 'normal');
+
+  logSuccess('Normal folder architecture initialized.');
 }

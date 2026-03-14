@@ -2,10 +2,14 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A command-line tool that scaffolds Flutter projects following **Clean Architecture**.
-Run one command to generate the full `core` layer, then generate feature modules
-as your app grows — each with entity, model, repository, datasources, use-case,
-BLoC, page, and widget files ready to fill in.
+A command-line tool that scaffolds Flutter projects with either:
+
+- **Clean Architecture** (layered `data/domain/presentation` feature modules), or
+- **Normal Folder Architecture** (modular feature folders with
+  `model/services/provider/screens`).
+
+Run one command to initialize your project structure, then generate feature
+modules as your app grows.
 
 ## Installation
 
@@ -18,7 +22,7 @@ your `PATH`.
 
 ## Usage
 
-### Initialise the core layer
+### Initialise architecture
 
 Run this once at the root of your Flutter project:
 
@@ -26,7 +30,20 @@ Run this once at the root of your Flutter project:
 clean_arch init
 ```
 
-Generated structure:
+The CLI now prompts you to choose:
+
+1. Clean Architecture
+2. Normal Folder Architecture
+
+You can also skip the prompt:
+
+```bash
+clean_arch init clean
+clean_arch init normal
+clean_arch normal init
+```
+
+Generated structure for **Clean Architecture**:
 
 ```
 lib/
@@ -55,19 +72,80 @@ lib/
   features/
 ```
 
+Generated structure for **Normal Folder Architecture**:
+
+```
+lib/
+  core/
+    widgets/
+      app_button.dart
+    utils/
+      app_utils.dart
+    controllers/
+      app_controller.dart
+    helper/
+      app_helper.dart
+    services/
+      app_service.dart
+    theme/
+      app_theme.dart
+  features/
+    auth/
+      model/
+        auth_model.dart
+      services/
+        auth_service.dart
+      provider/
+        auth_provider.dart
+      screens/
+        auth_screen.dart
+    home/
+      model/
+        home_model.dart
+      services/
+        home_service.dart
+      provider/
+        home_provider.dart
+      screens/
+        home_screen.dart
+```
+
+Note: `clean_arch init normal` does not generate `main.dart` or `app.dart`
+because Flutter already creates them when you create a new app.
+
 ### Generate a feature module
 
 ```bash
 clean_arch feature <name>
 ```
 
-Example:
+Explicit normal architecture feature command:
+
+```bash
+clean_arch normal feature <name>
+```
+
+Example (auto-detect mode):
 
 ```bash
 clean_arch feature auth
 ```
 
+`clean_arch feature <name>` now works for both architecture styles:
+
+- In a Clean Architecture project, it creates `data/domain/presentation` layers.
+- In a Normal Folder project, it creates:
+  - `screens/<name>_screen.dart`
+  - `services/<name>_service.dart`
+  - `provider/<name>_provider.dart`
+  - `model/<name>_model.dart`
+
+Use `clean_arch normal feature <name>` when you want to force normal feature
+generation even if clean architecture files exist in the project.
+
 Generated structure for `auth`:
+
+(Clean Architecture mode)
 
 ```
 lib/features/auth/
@@ -85,6 +163,20 @@ lib/features/auth/
     widgets/       → auth_card.dart
 ```
 
+(Normal Folder mode)
+
+```
+lib/features/auth/
+  model/
+    auth_model.dart
+  services/
+    auth_service.dart
+  provider/
+    auth_provider.dart
+  screens/
+    auth_screen.dart
+```
+
 ## Programmatic API
 
 You can also call the generators directly from Dart code:
@@ -93,9 +185,16 @@ You can also call the generators directly from Dart code:
 import 'package:clean_arch/generators/architecture_generator.dart';
 import 'package:clean_arch/generators/feature_generator.dart';
 
-void main() {
-  generateArchitecture();
-  generateFeature('auth');
+void main(List<String> args) {
+  final useNormalArchitecture = args.contains('--normal');
+
+  if (useNormalArchitecture) {
+    generateStandardArchitecture();
+    generateFeature('profile', architectureType: 'normal');
+  } else {
+    generateArchitecture();
+    generateFeature('auth', architectureType: 'clean');
+  }
 }
 ```
 

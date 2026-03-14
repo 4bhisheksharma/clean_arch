@@ -185,6 +185,247 @@ class AppTheme {
 }
 ''';
 
+// ── Standard architecture templates (used by `init normal`) ──
+
+const String standardCoreWidgetTemplate = '''
+import 'package:flutter/material.dart';
+
+class AppButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  const AppButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(onPressed: onPressed, child: Text(label));
+  }
+}
+''';
+
+const String standardCoreUtilsTemplate = '''
+class AppUtils {
+  static String formatDate(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '\${date.year}-\$month-\$day';
+  }
+}
+''';
+
+const String standardCoreControllerTemplate = '''
+class AppController {
+  bool _initialized = false;
+
+  bool get initialized => _initialized;
+
+  void initialize() {
+    _initialized = true;
+  }
+}
+''';
+
+const String standardCoreHelperTemplate = '''
+class AppHelper {
+  static bool isNullOrEmpty(String? value) {
+    return value == null || value.trim().isEmpty;
+  }
+}
+''';
+
+const String standardCoreServiceTemplate = '''
+class AppService {
+  Future<void> bootstrap() async {
+    // TODO: initialize app-level services here.
+  }
+}
+''';
+
+const String standardCoreThemeTemplate = '''
+import 'package:flutter/material.dart';
+
+class AppTheme {
+  static ThemeData light() {
+    return ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+      useMaterial3: true,
+    );
+  }
+
+  static ThemeData dark() {
+    return ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.teal,
+        brightness: Brightness.dark,
+      ),
+      useMaterial3: true,
+    );
+  }
+}
+''';
+
+const String authLoginScreenTemplate = '''
+import 'package:flutter/material.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Login')),
+      body: const Center(child: Text('Login Screen')),
+    );
+  }
+}
+''';
+
+const String authServiceTemplate = '''
+class AuthService {
+  Future<bool> login({required String email, required String password}) async {
+    // TODO: replace with API/service integration.
+    return email.isNotEmpty && password.isNotEmpty;
+  }
+}
+''';
+
+const String authProviderTemplate = '''
+import 'package:flutter/foundation.dart';
+
+import 'auth_service.dart';
+
+class AuthProvider extends ChangeNotifier {
+  final AuthService _authService;
+
+  AuthProvider({AuthService? authService})
+      : _authService = authService ?? AuthService();
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  Future<bool> login(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final success = await _authService.login(email: email, password: password);
+
+    _isLoading = false;
+    notifyListeners();
+    return success;
+  }
+}
+''';
+
+const String homeScreenTemplate = '''
+import 'package:flutter/material.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home')),
+      body: const Center(child: Text('Home Screen')),
+    );
+  }
+}
+''';
+
+const String homeModelTemplate = '''
+class HomeModel {
+  final String title;
+  final String subtitle;
+
+  const HomeModel({required this.title, required this.subtitle});
+}
+''';
+
+const String homeWidgetsTemplate = '''
+import 'package:flutter/material.dart';
+
+class HomeHeader extends StatelessWidget {
+  final String title;
+
+  const HomeHeader({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+    );
+  }
+}
+''';
+
+String standardFeatureScreenTemplate(String name) => '''
+import 'package:flutter/material.dart';
+
+class ${_pascal(name)}Screen extends StatelessWidget {
+  const ${_pascal(name)}Screen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('${_pascal(name)}')),
+      body: const Center(child: Text('${_pascal(name)} Screen')),
+    );
+  }
+}
+''';
+
+String standardFeatureServiceTemplate(String name) => '''
+class ${_pascal(name)}Service {
+  Future<List<Map<String, dynamic>>> fetchItems() async {
+    // TODO: implement API or local data source.
+    return <Map<String, dynamic>>[];
+  }
+}
+''';
+
+String standardFeatureProviderTemplate(String name) => '''
+import 'package:flutter/foundation.dart';
+
+import '../services/${name}_service.dart';
+
+class ${_pascal(name)}Provider extends ChangeNotifier {
+  final ${_pascal(name)}Service _service;
+
+  ${_pascal(name)}Provider({${_pascal(name)}Service? service})
+      : _service = service ?? ${_pascal(name)}Service();
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  Future<void> load() async {
+    _isLoading = true;
+    notifyListeners();
+
+    await _service.fetchItems();
+
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+''';
+
+String standardFeatureModelTemplate(String name) => '''
+class ${_pascal(name)}Model {
+  final String id;
+  final String title;
+
+  const ${_pascal(name)}Model({required this.id, required this.title});
+}
+''';
+
 // ── Feature templates (used by `feature` command) ──
 
 String featureEntityTemplate(String name) => '''
