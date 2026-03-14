@@ -3,7 +3,7 @@ description: >-
   A command-line tool that scaffolds Flutter projects following Clean
   Architecture — generates the full core layer and feature modules with
   boilerplate files in one command.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/4bhisheksharma/clean_arch
 homepage: https://github.com/4bhisheksharma/clean_arch
 issue_tracker: https://github.com/4bhisheksharma/clean_arch/issues
