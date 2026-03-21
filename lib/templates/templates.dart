@@ -547,17 +547,17 @@ class ${_pascal(name)}Error extends ${_pascal(name)}State {
 }
 ''';
 
-String featurePageTemplate(String name) => '''
+String featureScreenTemplate(String name) => '''
 import 'package:flutter/material.dart';
 
-class ${_pascal(name)}Page extends StatelessWidget {
-  const ${_pascal(name)}Page({super.key});
+class ${_pascal(name)}Screen extends StatelessWidget {
+  const ${_pascal(name)}Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('${_pascal(name)}')),
-      body: const Center(child: Text('${_pascal(name)} Page')),
+      body: const Center(child: Text('${_pascal(name)} Screen')),
     );
   }
 }

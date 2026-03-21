@@ -159,7 +159,7 @@ lib/features/auth/
     usecases/      → get_auth_usecase.dart
   presentation/
     bloc/          → auth_bloc.dart, auth_event.dart, auth_state.dart
-    pages/         → auth_page.dart
+    screens/       → auth_screen.dart
     widgets/       → auth_card.dart
 ```
 

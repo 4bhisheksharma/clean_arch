@@ -135,7 +135,7 @@ void main() {
     );
     expect(
       File(
-        'lib/features/profile/presentation/pages/profile_page.dart',
+        'lib/features/profile/presentation/screens/profile_screen.dart',
       ).existsSync(),
       isTrue,
     );

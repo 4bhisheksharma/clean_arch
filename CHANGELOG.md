@@ -1,3 +1,6 @@
+## 1.0.2
+- Changed directiory name from pages to screens and same for files.
+
 ## 1.0.1
 
 - Added `clean_arch normal init` as an explicit alias for normal architecture

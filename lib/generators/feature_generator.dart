@@ -81,9 +81,9 @@ void _generateCleanFeature(String feature) {
     featureStateTemplate(feature),
   );
   createDirectoryWithFile(
-    "$base/presentation/pages",
-    "${feature}_page.dart",
-    featurePageTemplate(feature),
+    "$base/presentation/screens",
+    "${feature}_screen.dart",
+    featureScreenTemplate(feature),
   );
   createDirectoryWithFile(
     "$base/presentation/widgets",
