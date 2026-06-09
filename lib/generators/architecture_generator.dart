@@ -126,6 +126,16 @@ void generateStandardArchitecture() {
     'app_theme.dart',
     standardCoreThemeTemplate,
   );
+  createDirectoryWithFile(
+    'lib/core/route',
+    'app_router.dart',
+    standardCoreRouterTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/storage',
+    'app_storage.dart',
+    standardCoreStorageTemplate,
+  );
 
   createDirectory('lib/features');
   generateFeature('auth', architectureType: 'normal');

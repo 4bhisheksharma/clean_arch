@@ -1,13 +1,21 @@
+import 'dart:io';
+
 import 'package:clean_arch/commands/feature_command.dart';
 import 'package:clean_arch/commands/init_command.dart';
+import 'package:clean_arch/src/version.dart';
+import 'package:clean_arch/utils/logger.dart';
+import 'package:clean_arch/utils/naming.dart';
+
+const int _exitUsage = 64;
 
 void main(List<String> args) {
   if (args.isEmpty) {
     _printUsage();
+    exitCode = _exitUsage;
     return;
   }
 
-  final command = args[0];
+  final command = args.first;
 
   switch (command) {
     case 'init':
@@ -22,9 +30,22 @@ void main(List<String> args) {
       _handleFeature(args);
       break;
 
-    default:
-      print("Unknown command: '$command'");
+    case 'help':
+    case '--help':
+    case '-h':
       _printUsage();
+      break;
+
+    case 'version':
+    case '--version':
+    case '-v':
+      logInfo('clean_arch $packageVersion');
+      break;
+
+    default:
+      logError("Unknown command: '$command'");
+      _printUsage();
+      exitCode = _exitUsage;
       break;
   }
 }
@@ -36,16 +57,22 @@ void _handleInit(List<String> args) {
 
 void _handleFeature(List<String> args) {
   if (args.length < 2) {
-    print('Usage: clean_arch feature <name>');
+    logError('Missing feature name.');
+    logInfo('Usage: clean_arch feature <name>');
+    exitCode = _exitUsage;
     return;
   }
 
-  runFeature(args[1]);
+  if (!_runFeatureChecked(args[1])) {
+    exitCode = _exitUsage;
+  }
 }
 
 void _handleNormal(List<String> args) {
   if (args.length < 2) {
-    print('Usage: clean_arch normal <init|feature> [name]');
+    logError('Missing normal subcommand.');
+    logInfo('Usage: clean_arch normal <init|feature> [name]');
+    exitCode = _exitUsage;
     return;
   }
 
@@ -57,22 +84,47 @@ void _handleNormal(List<String> args) {
       break;
     case 'feature':
       if (args.length < 3) {
-        print('Usage: clean_arch normal feature <name>');
+        logError('Missing feature name.');
+        logInfo('Usage: clean_arch normal feature <name>');
+        exitCode = _exitUsage;
         return;
       }
-      runFeature(args[2], architectureType: 'normal');
+      if (!_runFeatureChecked(args[2], architectureType: 'normal')) {
+        exitCode = _exitUsage;
+      }
       break;
     default:
-      print("Unknown normal subcommand: '$subCommand'");
-      print('Usage: clean_arch normal <init|feature> [name]');
+      logError("Unknown normal subcommand: '$subCommand'");
+      logInfo('Usage: clean_arch normal <init|feature> [name]');
+      exitCode = _exitUsage;
       break;
   }
 }
 
+/// Validates the feature [name] before delegating to the generator.
+///
+/// Returns `false` (and logs an error) when the name is invalid, so the caller
+/// can set a non-zero exit code.
+bool _runFeatureChecked(String name, {String? architectureType}) {
+  if (normalizeFeatureName(name) == null) {
+    logError(
+      "Invalid feature name: '$name'. "
+      'Use letters, digits, and underscores (e.g. user_profile).',
+    );
+    return false;
+  }
+
+  runFeature(name, architectureType: architectureType);
+  return true;
+}
+
 void _printUsage() {
-  print('Usage:');
-  print('  clean_arch init [clean|normal]');
-  print('  clean_arch normal init');
-  print('  clean_arch feature <name>');
-  print('  clean_arch normal feature <name>');
+  logInfo('clean_arch $packageVersion — Flutter project scaffolder\n');
+  logInfo('Usage:');
+  logInfo('  clean_arch init [clean|normal]   Scaffold the core layer');
+  logInfo('  clean_arch normal init           Scaffold the normal core layer');
+  logInfo('  clean_arch feature <name>        Generate a feature module');
+  logInfo('  clean_arch normal feature <name> Generate a normal feature module');
+  logInfo('  clean_arch help                  Show this help message');
+  logInfo('  clean_arch version               Show the installed version');
 }

@@ -27,3 +27,5 @@ void main(List<String> args) {
     generateFeature('auth', architectureType: 'clean');
   }
 }
+
+

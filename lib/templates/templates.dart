@@ -268,6 +268,81 @@ class AppTheme {
 }
 ''';
 
+const String standardCoreRouterTemplate = '''
+import 'package:flutter/material.dart';
+
+/// Centralised navigation table for the app.
+///
+/// Wire this into your app with
+/// `MaterialApp(onGenerateRoute: AppRouter.onGenerateRoute)` and navigate with
+/// `Navigator.pushNamed(context, AppRouter.home)`.
+class AppRouter {
+  AppRouter._();
+
+  static const String initial = '/';
+  static const String home = '/home';
+  static const String login = '/login';
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case initial:
+      case home:
+        // TODO: return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return _placeholder('Home');
+      case login:
+        // TODO: return MaterialPageRoute(builder: (_) => const LoginScreen());
+        return _placeholder('Login');
+      default:
+        return _placeholder('No route for \${settings.name}');
+    }
+  }
+
+  static Route<dynamic> _placeholder(String title) {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        appBar: AppBar(title: Text(title)),
+        body: Center(child: Text(title)),
+      ),
+    );
+  }
+}
+''';
+
+const String standardCoreStorageTemplate = '''
+/// Simple key-value storage wrapper used across the app.
+///
+/// The default implementation keeps values in memory. Swap the body for a
+/// persistent backend (e.g. shared_preferences or hive) without changing any
+/// of the calling code.
+class AppStorage {
+  AppStorage._();
+
+  static final AppStorage instance = AppStorage._();
+
+  final Map<String, String> _box = <String, String>{};
+
+  Future<void> write(String key, String value) async {
+    _box[key] = value;
+  }
+
+  Future<String?> read(String key) async {
+    return _box[key];
+  }
+
+  Future<bool> contains(String key) async {
+    return _box.containsKey(key);
+  }
+
+  Future<void> remove(String key) async {
+    _box.remove(key);
+  }
+
+  Future<void> clear() async {
+    _box.clear();
+  }
+}
+''';
+
 const String authLoginScreenTemplate = '''
 import 'package:flutter/material.dart';
 

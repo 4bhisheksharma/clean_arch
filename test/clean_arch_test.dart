@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:clean_arch/commands/init_command.dart';
 import 'package:clean_arch/generators/architecture_generator.dart';
 import 'package:clean_arch/generators/feature_generator.dart';
+import 'package:clean_arch/utils/naming.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -58,6 +59,8 @@ void main() {
     expect(File('lib/core/helper/app_helper.dart').existsSync(), isTrue);
     expect(File('lib/core/services/app_service.dart').existsSync(), isTrue);
     expect(File('lib/core/theme/app_theme.dart').existsSync(), isTrue);
+    expect(File('lib/core/route/app_router.dart').existsSync(), isTrue);
+    expect(File('lib/core/storage/app_storage.dart').existsSync(), isTrue);
 
     expect(
       File('lib/features/auth/model/auth_model.dart').existsSync(),
@@ -190,5 +193,43 @@ void main() {
       ).existsSync(),
       isFalse,
     );
+  });
+
+  test('generateFeature normalizes messy feature names', () {
+    generateArchitecture();
+
+    generateFeature('User Profile');
+
+    expect(
+      File(
+        'lib/features/user_profile/domain/entities/user_profile_entity.dart',
+      ).existsSync(),
+      isTrue,
+    );
+  });
+
+  test('generateFeature ignores invalid feature names', () {
+    generateArchitecture();
+
+    generateFeature('123');
+
+    expect(Directory('lib/features/123').existsSync(), isFalse);
+  });
+
+  group('normalizeFeatureName', () {
+    test('converts spaces, hyphens, and camelCase to snake_case', () {
+      expect(normalizeFeatureName('User Profile'), 'user_profile');
+      expect(normalizeFeatureName('userProfile'), 'user_profile');
+      expect(normalizeFeatureName('order-history'), 'order_history');
+      expect(normalizeFeatureName('  messy__Name  '), 'messy_name');
+      expect(normalizeFeatureName('auth'), 'auth');
+    });
+
+    test('returns null for invalid names', () {
+      expect(normalizeFeatureName(''), isNull);
+      expect(normalizeFeatureName('   '), isNull);
+      expect(normalizeFeatureName('123'), isNull);
+      expect(normalizeFeatureName('!!!'), isNull);
+    });
   });
 }

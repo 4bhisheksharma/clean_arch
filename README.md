@@ -43,6 +43,13 @@ clean_arch init normal
 clean_arch normal init
 ```
 
+You can check the version or print help at any time:
+
+```bash
+clean_arch version
+clean_arch help
+```
+
 Generated structure for **Clean Architecture**:
 
 ```
@@ -89,6 +96,10 @@ lib/
       app_service.dart
     theme/
       app_theme.dart
+    route/
+      app_router.dart
+    storage/
+      app_storage.dart
   features/
     auth/
       model/
@@ -142,6 +153,11 @@ clean_arch feature auth
 
 Use `clean_arch normal feature <name>` when you want to force normal feature
 generation even if clean architecture files exist in the project.
+
+Feature names are automatically normalized to `snake_case`, so
+`clean_arch feature "User Profile"` and `clean_arch feature userProfile` both
+generate a `user_profile` module. Names that can't form a valid Dart identifier
+(e.g. starting with a digit) are rejected with a clear error.
 
 Generated structure for `auth`:
 

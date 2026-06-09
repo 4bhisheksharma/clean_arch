@@ -3,6 +3,7 @@ import 'dart:io';
 import '../templates/templates.dart';
 import '../utils/file_helper.dart';
 import '../utils/logger.dart';
+import '../utils/naming.dart';
 
 /// Scaffolds a feature module named [feature] inside `lib/features/[feature]/`.
 ///
@@ -12,15 +13,28 @@ import '../utils/logger.dart';
 ///
 /// Pass [architectureType] as `clean` or `normal` to force a mode.
 void generateFeature(String feature, {String? architectureType}) {
+  final normalized = normalizeFeatureName(feature);
+  if (normalized == null) {
+    logError(
+      "Invalid feature name: '$feature'. "
+      'Use letters, digits, and underscores (e.g. user_profile).',
+    );
+    return;
+  }
+
+  if (normalized != feature) {
+    logInfo("Using normalized feature name: '$normalized'");
+  }
+
   final forcedMode = _normalizeArchitectureType(architectureType);
 
   if (forcedMode == _FeatureArchitectureType.clean ||
       (forcedMode == null && _isCleanArchitectureProject())) {
-    _generateCleanFeature(feature);
+    _generateCleanFeature(normalized);
     return;
   }
 
-  _generateStandardFeature(feature);
+  _generateStandardFeature(normalized);
 }
 
 void _generateCleanFeature(String feature) {

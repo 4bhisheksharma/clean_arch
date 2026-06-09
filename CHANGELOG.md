@@ -1,3 +1,21 @@
+## 1.0.3
+
+- Added `route/app_router.dart` and `storage/app_storage.dart` to the **Normal
+  Folder Architecture** core so it now matches the Clean Architecture core
+  (which already shipped `route` and `storage`).
+- Hardened the CLI:
+  - New `clean_arch help` (`--help`/`-h`) and `clean_arch version`
+    (`--version`/`-v`) commands.
+  - Proper non-zero exit codes on usage errors.
+  - Feature names are validated and auto-normalized to `snake_case`
+    (e.g. `"User Profile"` → `user_profile`); invalid names are rejected.
+- Improved console logging: ANSI colors (auto-detected), errors/warnings routed
+  to `stderr`, and "skipped (already exists)" notices when files are not
+  overwritten.
+- `createFile`/`createDirectory` now return whether they created something.
+- Added a `packageVersion` constant and exported the new `naming` utilities.
+- Expanded the test suite (core scaffold coverage + name normalization).
+
 ## 1.0.2
 - Changed directiory name from pages to screens and same for files.
 
