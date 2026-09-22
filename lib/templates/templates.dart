@@ -104,13 +104,191 @@ extension StringExtensions on String {
 }
 ''';
 
+const String mainAppTemplate = '''
+import 'package:flutter/material.dart';
+
+import '../config/app_config.dart';
+import '../navigation/app_navigator.dart';
+import '../router/app_router.dart';
+import '../theme/app_theme.dart';
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: AppConfig.appName,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      navigatorKey: AppNavigator.navigatorKey,
+      scaffoldMessengerKey: AppNavigator.scaffoldMessengerKey,
+      onGenerateRoute: AppRouter.onGenerateRoute,
+      initialRoute: AppRouter.home,
+    );
+  }
+}
+''';
+
 const String appRouterTemplate = '''
-// Define your app routes here.
+import 'package:flutter/material.dart';
 
 class AppRouter {
   static const String home = '/';
   static const String login = '/login';
-  // Add more routes as needed.
+
+  static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Home Screen')),
+          ),
+        );
+      default:
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Page not found')),
+          ),
+        );
+    }
+  }
+}
+''';
+
+const String appDatabaseTemplate = '''
+abstract class AppDatabase {
+  Future<void> init();
+  Future<void> close();
+  Future<void> clear();
+}
+''';
+
+const String appDatePickerTemplate = '''
+import 'package:flutter/material.dart';
+
+abstract final class AppDatePicker {
+  static Future<DateTime?> pickDate(
+    BuildContext context, {
+    DateTime? initialDate,
+    DateTime? firstDate,
+    DateTime? lastDate,
+  }) {
+    final now = DateTime.now();
+    return showDatePicker(
+      context: context,
+      initialDate: initialDate ?? now,
+      firstDate: firstDate ?? DateTime(now.year - 5),
+      lastDate: lastDate ?? DateTime(now.year + 5),
+    );
+  }
+}
+''';
+
+const String locationServiceTemplate = '''
+abstract class LocationService {
+  Future<Map<String, double>?> getCurrentLocation();
+  Future<bool> requestPermission();
+}
+''';
+
+const String baseModelTemplate = '''
+abstract class BaseModel {
+  const BaseModel();
+  Map<String, dynamic> toJson();
+}
+''';
+
+const String appNavigatorTemplate = '''
+import 'package:flutter/material.dart';
+
+/// Global navigation and messaging keys for navigation without BuildContext.
+abstract final class AppNavigator {
+  AppNavigator._();
+
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  static BuildContext? get currentContext => navigatorKey.currentContext;
+
+  static Future<T?>? pushNamed<T>(String routeName, {Object? arguments}) {
+    return navigatorKey.currentState?.pushNamed<T>(routeName, arguments: arguments);
+  }
+
+  static void pop<T>([T? result]) {
+    navigatorKey.currentState?.pop(result);
+  }
+}
+''';
+
+const String networkInfoTemplate = '''
+abstract class NetworkInfo {
+  Future<bool> get isConnected;
+}
+''';
+
+const String platformInfoTemplate = '''
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+
+abstract final class PlatformInfo {
+  static bool get isWeb => kIsWeb;
+  static bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  static bool get isIOS => !kIsWeb && Platform.isIOS;
+  static bool get isMacOS => !kIsWeb && Platform.isMacOS;
+  static bool get isWindows => !kIsWeb && Platform.isWindows;
+  static bool get isLinux => !kIsWeb && Platform.isLinux;
+}
+''';
+
+const String securityServiceTemplate = '''
+abstract class SecurityService {
+  Future<String?> encrypt(String rawData);
+  Future<String?> decrypt(String encryptedData);
+}
+''';
+
+const String syncManagerTemplate = '''
+abstract class SyncManager {
+  Future<void> syncAll();
+  Future<void> syncPending();
+  Stream<bool> get isSyncing;
+}
+''';
+
+const String formValidatorsTemplate = '''
+abstract final class FormValidators {
+  static final RegExp _emailRegex = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$',
+  );
+
+  static String? validateRequired(String? value, [String fieldName = 'This field']) {
+    if (value == null || value.trim().isEmpty) {
+      return '\$fieldName is required';
+    }
+    return null;
+  }
+
+  static String? validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email is required';
+    }
+    if (!_emailRegex.hasMatch(value.trim())) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  static String? validateMinLength(String? value, int minLength, [String fieldName = 'This field']) {
+    if (value == null || value.length < minLength) {
+      return '\$fieldName must be at least \$minLength characters';
+    }
+    return null;
+  }
 }
 ''';
 

@@ -17,8 +17,26 @@ modules as your app grows.
 dart pub global activate clean_arch
 ```
 
-Make sure `~/.pub-cache/bin` (or `%APPDATA%\Pub\Cache\bin` on Windows) is on
-your `PATH`.
+### Adding to PATH
+
+Make sure `~/.pub-cache/bin` (or `%APPDATA%\Pub\Cache\bin` on Windows) is on your `PATH`.
+
+**macOS (zsh - default shell):**
+```bash
+echo 'export PATH="$PATH":"$HOME/.pub-cache/bin"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**Linux (bash):**
+```bash
+echo 'export PATH="$PATH":"$HOME/.pub-cache/bin"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Windows (PowerShell):**
+```powershell
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:LOCALAPPDATA\Pub\Cache\bin", "User")
+```
 
 ## Usage
 
@@ -55,27 +73,35 @@ Generated structure for **Clean Architecture**:
 ```
 lib/
   core/
+    app/              → main_app.dart
     config/           → app_config.dart
     constants/        → app_constants.dart
     data/
       datasources/
         local/        → local_datasource.dart
         remote/       → remote_datasource.dart
-      models/
       repositories/   → base_repository.dart
+    database/         → app_database.dart
+    date_picker/      → app_date_picker.dart
     di/               → injection_container.dart
     errors/           → failures.dart, exceptions.dart
+    locations/        → location_service.dart
+    models/           → base_model.dart
+    navigation/       → app_navigator.dart
     network/
+      network_info.dart
       interceptors/   → auth_interceptor.dart
-    usecases/         → usecase.dart
-    utils/            → extensions.dart
-    route/            → app_router.dart
-    storage/          → local_storage.dart
+    platform/         → platform_info.dart
+    router/           → app_router.dart
+    security/         → security_service.dart
     services/         → api_service.dart
     shared/
       widgets/        → custom_button.dart
-      mixins/         → validation_mixin.dart
+    storage/          → local_storage.dart
+    sync/             → sync_manager.dart
     theme/            → app_theme.dart
+    utils/            → extensions.dart
+    validation/       → form_validators.dart
   features/
 ```
 

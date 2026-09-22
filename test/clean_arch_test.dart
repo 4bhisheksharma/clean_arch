@@ -39,11 +39,50 @@ void main() {
     expect(file.readAsStringSync(), 'hello');
   });
 
-  test('generateArchitecture creates clean architecture scaffold', () {
+  test('generateArchitecture creates clean architecture scaffold with all 22 core folders', () {
     generateArchitecture();
 
+    expect(File('lib/core/app/main_app.dart').existsSync(), isTrue);
     expect(File('lib/core/config/app_config.dart').existsSync(), isTrue);
-    expect(File('lib/core/usecases/usecase.dart').existsSync(), isTrue);
+    expect(File('lib/core/constants/app_constants.dart').existsSync(), isTrue);
+    expect(
+      File('lib/core/data/datasources/local/local_datasource.dart').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('lib/core/data/datasources/remote/remote_datasource.dart').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('lib/core/data/repositories/base_repository.dart').existsSync(),
+      isTrue,
+    );
+    expect(File('lib/core/database/app_database.dart').existsSync(), isTrue);
+    expect(File('lib/core/date_picker/app_date_picker.dart').existsSync(), isTrue);
+    expect(File('lib/core/di/injection_container.dart').existsSync(), isTrue);
+    expect(File('lib/core/errors/failures.dart').existsSync(), isTrue);
+    expect(File('lib/core/errors/exceptions.dart').existsSync(), isTrue);
+    expect(File('lib/core/locations/location_service.dart').existsSync(), isTrue);
+    expect(File('lib/core/models/base_model.dart').existsSync(), isTrue);
+    expect(File('lib/core/navigation/app_navigator.dart').existsSync(), isTrue);
+    expect(File('lib/core/network/network_info.dart').existsSync(), isTrue);
+    expect(
+      File('lib/core/network/interceptors/auth_interceptor.dart').existsSync(),
+      isTrue,
+    );
+    expect(File('lib/core/platform/platform_info.dart').existsSync(), isTrue);
+    expect(File('lib/core/router/app_router.dart').existsSync(), isTrue);
+    expect(File('lib/core/security/security_service.dart').existsSync(), isTrue);
+    expect(File('lib/core/services/api_service.dart').existsSync(), isTrue);
+    expect(
+      File('lib/core/shared/widgets/custom_button.dart').existsSync(),
+      isTrue,
+    );
+    expect(File('lib/core/storage/local_storage.dart').existsSync(), isTrue);
+    expect(File('lib/core/sync/sync_manager.dart').existsSync(), isTrue);
+    expect(File('lib/core/theme/app_theme.dart').existsSync(), isTrue);
+    expect(File('lib/core/utils/extensions.dart').existsSync(), isTrue);
+    expect(File('lib/core/validation/form_validators.dart').existsSync(), isTrue);
     expect(Directory('lib/features').existsSync(), isTrue);
   });
 

@@ -1,3 +1,34 @@
+## 1.1.0
+
+- Expanded the **Clean Architecture** core scaffolding to generate all 22 standard core folders and starter files:
+  - `lib/core/app` (`main_app.dart`)
+  - `lib/core/config` (`app_config.dart`)
+  - `lib/core/constants` (`app_constants.dart`)
+  - `lib/core/data` (`datasources/`, `repositories/`)
+  - `lib/core/database` (`app_database.dart`)
+  - `lib/core/date_picker` (`app_date_picker.dart`)
+  - `lib/core/di` (`injection_container.dart`)
+  - `lib/core/errors` (`failures.dart`, `exceptions.dart`)
+  - `lib/core/locations` (`location_service.dart`)
+  - `lib/core/models` (`base_model.dart`)
+  - `lib/core/navigation` (`app_navigator.dart`)
+  - `lib/core/network` (`network_info.dart`, `interceptors/auth_interceptor.dart`)
+  - `lib/core/platform` (`platform_info.dart`)
+  - `lib/core/router` (`app_router.dart`)
+  - `lib/core/security` (`security_service.dart`)
+  - `lib/core/services` (`api_service.dart`)
+  - `lib/core/shared/widgets` (`custom_button.dart`)
+  - `lib/core/storage` (`local_storage.dart`)
+  - `lib/core/sync` (`sync_manager.dart`)
+  - `lib/core/theme` (`app_theme.dart`)
+  - `lib/core/utils` (`extensions.dart`)
+  - `lib/core/validation` (`form_validators.dart`)
+- Standardized router directory from `route/` to `router/` in Clean Architecture.
+- Replaced mixin validation with dedicated `validation/form_validators.dart`.
+- Enhanced `AppRouter` template with default route handling for `MainApp`.
+- Updated documentation with macOS (`~/.zshrc`) and Linux PATH setup instructions.
+- Expanded test suite to verify all 22 core directories and files.
+
 ## 1.0.3
 
 - Added `route/app_router.dart` and `storage/app_storage.dart` to the **Normal

@@ -11,6 +11,11 @@ void generateArchitecture() {
   logInfo("Initializing Clean Architecture...");
 
   createDirectoryWithFile(
+    "lib/core/app",
+    "main_app.dart",
+    mainAppTemplate,
+  );
+  createDirectoryWithFile(
     "lib/core/config",
     "app_config.dart",
     appConfigTemplate,
@@ -30,11 +35,20 @@ void generateArchitecture() {
     "remote_datasource.dart",
     remoteDatasourceTemplate,
   );
-  createDirectory("lib/core/data/models");
   createDirectoryWithFile(
     "lib/core/data/repositories",
     "base_repository.dart",
     baseRepositoryTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/database",
+    "app_database.dart",
+    appDatabaseTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/date_picker",
+    "app_date_picker.dart",
+    appDatePickerTemplate,
   );
   createDirectoryWithFile(
     "lib/core/di",
@@ -48,25 +62,44 @@ void generateArchitecture() {
     exceptionsTemplate,
   );
   createDirectoryWithFile(
+    "lib/core/locations",
+    "location_service.dart",
+    locationServiceTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/models",
+    "base_model.dart",
+    baseModelTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/navigation",
+    "app_navigator.dart",
+    appNavigatorTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/network",
+    "network_info.dart",
+    networkInfoTemplate,
+  );
+  createDirectoryWithFile(
     "lib/core/network/interceptors",
     "auth_interceptor.dart",
     authInterceptorTemplate,
   );
-  createDirectoryWithFile("lib/core/usecases", "usecase.dart", usecaseTemplate);
   createDirectoryWithFile(
-    "lib/core/utils",
-    "extensions.dart",
-    extensionsTemplate,
+    "lib/core/platform",
+    "platform_info.dart",
+    platformInfoTemplate,
   );
   createDirectoryWithFile(
-    "lib/core/route",
+    "lib/core/router",
     "app_router.dart",
     appRouterTemplate,
   );
   createDirectoryWithFile(
-    "lib/core/storage",
-    "local_storage.dart",
-    localStorageTemplate,
+    "lib/core/security",
+    "security_service.dart",
+    securityServiceTemplate,
   );
   createDirectoryWithFile(
     "lib/core/services",
@@ -79,11 +112,26 @@ void generateArchitecture() {
     customButtonTemplate,
   );
   createDirectoryWithFile(
-    "lib/core/shared/mixins",
-    "validation_mixin.dart",
-    validationMixinTemplate,
+    "lib/core/storage",
+    "local_storage.dart",
+    localStorageTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/sync",
+    "sync_manager.dart",
+    syncManagerTemplate,
   );
   createDirectoryWithFile("lib/core/theme", "app_theme.dart", appThemeTemplate);
+  createDirectoryWithFile(
+    "lib/core/utils",
+    "extensions.dart",
+    extensionsTemplate,
+  );
+  createDirectoryWithFile(
+    "lib/core/validation",
+    "form_validators.dart",
+    formValidatorsTemplate,
+  );
 
   createDirectory("lib/features");
 
