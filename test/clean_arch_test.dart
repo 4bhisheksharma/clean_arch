@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:clean_arch/commands/init_command.dart';
 import 'package:clean_arch/generators/architecture_generator.dart';
+import 'package:clean_arch/generators/dependency_installer.dart';
 import 'package:clean_arch/generators/feature_generator.dart';
 import 'package:clean_arch/utils/naming.dart';
 import 'package:test/test.dart';
@@ -39,52 +40,87 @@ void main() {
     expect(file.readAsStringSync(), 'hello');
   });
 
-  test('generateArchitecture creates clean architecture scaffold with all 22 core folders', () {
-    generateArchitecture();
+  test(
+    'generateArchitecture creates clean architecture scaffold with all 22 core folders',
+    () {
+      generateArchitecture();
 
-    expect(File('lib/core/app/main_app.dart').existsSync(), isTrue);
-    expect(File('lib/core/config/app_config.dart').existsSync(), isTrue);
-    expect(File('lib/core/constants/app_constants.dart').existsSync(), isTrue);
-    expect(
-      File('lib/core/data/datasources/local/local_datasource.dart').existsSync(),
-      isTrue,
-    );
-    expect(
-      File('lib/core/data/datasources/remote/remote_datasource.dart').existsSync(),
-      isTrue,
-    );
-    expect(
-      File('lib/core/data/repositories/base_repository.dart').existsSync(),
-      isTrue,
-    );
-    expect(File('lib/core/database/app_database.dart').existsSync(), isTrue);
-    expect(File('lib/core/date_picker/app_date_picker.dart').existsSync(), isTrue);
-    expect(File('lib/core/di/injection_container.dart').existsSync(), isTrue);
-    expect(File('lib/core/errors/failures.dart').existsSync(), isTrue);
-    expect(File('lib/core/errors/exceptions.dart').existsSync(), isTrue);
-    expect(File('lib/core/locations/location_service.dart').existsSync(), isTrue);
-    expect(File('lib/core/models/base_model.dart').existsSync(), isTrue);
-    expect(File('lib/core/navigation/app_navigator.dart').existsSync(), isTrue);
-    expect(File('lib/core/network/network_info.dart').existsSync(), isTrue);
-    expect(
-      File('lib/core/network/interceptors/auth_interceptor.dart').existsSync(),
-      isTrue,
-    );
-    expect(File('lib/core/platform/platform_info.dart').existsSync(), isTrue);
-    expect(File('lib/core/router/app_router.dart').existsSync(), isTrue);
-    expect(File('lib/core/security/security_service.dart').existsSync(), isTrue);
-    expect(File('lib/core/services/api_service.dart').existsSync(), isTrue);
-    expect(
-      File('lib/core/shared/widgets/custom_button.dart').existsSync(),
-      isTrue,
-    );
-    expect(File('lib/core/storage/local_storage.dart').existsSync(), isTrue);
-    expect(File('lib/core/sync/sync_manager.dart').existsSync(), isTrue);
-    expect(File('lib/core/theme/app_theme.dart').existsSync(), isTrue);
-    expect(File('lib/core/utils/extensions.dart').existsSync(), isTrue);
-    expect(File('lib/core/validation/form_validators.dart').existsSync(), isTrue);
-    expect(Directory('lib/features').existsSync(), isTrue);
-  });
+      expect(File('lib/core/app/main_app.dart').existsSync(), isTrue);
+      expect(File('lib/core/config/app_config.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/constants/app_constants.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        File(
+          'lib/core/data/datasources/local/local_datasource.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(
+        File(
+          'lib/core/data/datasources/remote/remote_datasource.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(
+        File('lib/core/data/repositories/base_repository.dart').existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/database/app_database.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/date_picker/app_date_picker.dart').existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/di/injection_container.dart').existsSync(), isTrue);
+      expect(File('lib/core/errors/failures.dart').existsSync(), isTrue);
+      expect(File('lib/core/errors/exceptions.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/locations/location_service.dart').existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/models/base_model.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/navigation/app_navigator.dart').existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/network/network_info.dart').existsSync(), isTrue);
+      expect(
+        File(
+          'lib/core/network/interceptors/auth_interceptor.dart',
+        ).existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/platform/platform_info.dart').existsSync(), isTrue);
+      expect(File('lib/core/router/app_router.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/security/security_service.dart').existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/services/api_service.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/services/app_update_service.dart').existsSync(),
+        isTrue,
+      );
+      expect(
+        File('lib/core/app/main_app.dart').readAsStringSync(),
+        contains('AppUpdateService.instance.checkForUpdate()'),
+      );
+      expect(
+        File('lib/core/shared/widgets/custom_button.dart').existsSync(),
+        isTrue,
+      );
+      expect(File('lib/core/storage/local_storage.dart').existsSync(), isTrue);
+      expect(File('lib/core/sync/sync_manager.dart').existsSync(), isTrue);
+      expect(File('lib/core/theme/app_theme.dart').existsSync(), isTrue);
+      expect(File('lib/core/utils/extensions.dart').existsSync(), isTrue);
+      expect(
+        File('lib/core/validation/form_validators.dart').existsSync(),
+        isTrue,
+      );
+      expect(Directory('lib/features').existsSync(), isTrue);
+    },
+  );
 
   test('generateStandardArchitecture creates normal scaffold', () {
     generateStandardArchitecture();
@@ -97,6 +133,14 @@ void main() {
     );
     expect(File('lib/core/helper/app_helper.dart').existsSync(), isTrue);
     expect(File('lib/core/services/app_service.dart').existsSync(), isTrue);
+    expect(
+      File('lib/core/services/app_update_service.dart').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('lib/core/services/app_service.dart').readAsStringSync(),
+      contains('AppUpdateService.instance.checkForUpdate()'),
+    );
     expect(File('lib/core/theme/app_theme.dart').existsSync(), isTrue);
     expect(File('lib/core/route/app_router.dart').existsSync(), isTrue);
     expect(File('lib/core/storage/app_storage.dart').existsSync(), isTrue);
@@ -139,7 +183,7 @@ void main() {
   });
 
   test('runInit supports explicit architecture argument', () {
-    runInit(architectureType: 'normal');
+    runInit(architectureType: 'normal', installDependencies: false);
     expect(
       File('lib/features/auth/services/auth_service.dart').existsSync(),
       isTrue,
@@ -156,7 +200,7 @@ void main() {
     final previous = Directory.current.path;
     Directory.current = cleanDir.path;
     try {
-      runInit(architectureType: 'clean');
+      runInit(architectureType: 'clean', installDependencies: false);
       expect(File('lib/core/config/app_config.dart').existsSync(), isTrue);
     } finally {
       Directory.current = previous;
@@ -269,6 +313,52 @@ void main() {
       expect(normalizeFeatureName('   '), isNull);
       expect(normalizeFeatureName('123'), isNull);
       expect(normalizeFeatureName('!!!'), isNull);
+    });
+  });
+
+  group('installDependencies', () {
+    final calls = <List<String>>[];
+
+    ProcessRunner stubRunner({Set<String> failing = const {}}) {
+      return (executable, arguments) {
+        calls.add([executable, ...arguments]);
+        final failed = arguments.skip(2).any(failing.contains);
+        return ProcessResult(0, failed ? 1 : 0, '', failed ? 'error' : '');
+      };
+    }
+
+    setUp(calls.clear);
+
+    test('skips when there is no pubspec.yaml', () {
+      expect(installDependencies(runner: stubRunner()), isFalse);
+      expect(calls, isEmpty);
+    });
+
+    test('adds every default package in one flutter pub add call', () {
+      File('pubspec.yaml').writeAsStringSync('name: app\n');
+
+      expect(installDependencies(runner: stubRunner()), isTrue);
+      expect(calls, [
+        ['flutter', 'pub', 'add', ...defaultDependencies],
+      ]);
+      expect(defaultDependencies, contains('in_app_update'));
+    });
+
+    test('retries one by one and reports packages that fail', () {
+      File('pubspec.yaml').writeAsStringSync('name: app\n');
+
+      final ok = installDependencies(
+        packages: ['dio', 'broken', 'get_it'],
+        runner: stubRunner(failing: {'broken'}),
+      );
+
+      expect(ok, isFalse);
+      expect(calls, [
+        ['flutter', 'pub', 'add', 'dio', 'broken', 'get_it'],
+        ['flutter', 'pub', 'add', 'dio'],
+        ['flutter', 'pub', 'add', 'broken'],
+        ['flutter', 'pub', 'add', 'get_it'],
+      ]);
     });
   });
 }

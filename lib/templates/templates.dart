@@ -53,11 +53,11 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure([String message = 'Server error']) : super(message);
+  const ServerFailure([super.message = 'Server error']);
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure([String message = 'Cache error']) : super(message);
+  const CacheFailure([super.message = 'Cache error']);
 }
 ''';
 
@@ -110,10 +110,25 @@ import 'package:flutter/material.dart';
 import '../config/app_config.dart';
 import '../navigation/app_navigator.dart';
 import '../router/app_router.dart';
+import '../services/app_update_service.dart';
 import '../theme/app_theme.dart';
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Check the Play Store for a newer version once the first frame is shown.
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => AppUpdateService.instance.checkForUpdate(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +142,55 @@ class MainApp extends StatelessWidget {
       onGenerateRoute: AppRouter.onGenerateRoute,
       initialRoute: AppRouter.home,
     );
+  }
+}
+''';
+
+/// Android in-app update service, shared by both architectures.
+const String appUpdateServiceTemplate = '''
+import 'package:flutter/foundation.dart';
+import 'package:in_app_update/in_app_update.dart';
+
+/// Prompts the user to update when a newer version is on the Play Store.
+///
+/// Uses Google Play's in-app updates API, so it only works on Android builds
+/// installed from the Play Store. On every other platform it does nothing.
+class AppUpdateService {
+  AppUpdateService._();
+
+  static final AppUpdateService instance = AppUpdateService._();
+
+  bool _checked = false;
+
+  /// Checks for an update once per app launch.
+  ///
+  /// Set [immediate] to `true` for a blocking full-screen update (use it for
+  /// critical releases). Otherwise the update downloads in the background and
+  /// is installed when the download completes.
+  Future<void> checkForUpdate({bool immediate = false}) async {
+    if (_checked || kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+      return;
+    }
+    _checked = true;
+
+    try {
+      final info = await InAppUpdate.checkForUpdate();
+      if (info.updateAvailability != UpdateAvailability.updateAvailable) {
+        return;
+      }
+
+      if (immediate && info.immediateUpdateAllowed) {
+        await InAppUpdate.performImmediateUpdate();
+      } else if (info.flexibleUpdateAllowed) {
+        final result = await InAppUpdate.startFlexibleUpdate();
+        if (result == AppUpdateResult.success) {
+          await InAppUpdate.completeFlexibleUpdate();
+        }
+      }
+    } catch (e) {
+      // Expected in debug or sideloaded builds where Play is unavailable.
+      debugPrint('AppUpdateService: update check failed: \$e');
+    }
   }
 }
 ''';
@@ -416,9 +480,14 @@ class AppHelper {
 ''';
 
 const String standardCoreServiceTemplate = '''
+import 'app_update_service.dart';
+
 class AppService {
   Future<void> bootstrap() async {
     // TODO: initialize app-level services here.
+
+    // Prompts for a Play Store update on Android; no-op elsewhere.
+    await AppUpdateService.instance.checkForUpdate();
   }
 }
 ''';
@@ -619,7 +688,8 @@ class HomeHeader extends StatelessWidget {
 }
 ''';
 
-String standardFeatureScreenTemplate(String name) => '''
+String standardFeatureScreenTemplate(String name) =>
+    '''
 import 'package:flutter/material.dart';
 
 class ${_pascal(name)}Screen extends StatelessWidget {
@@ -635,7 +705,8 @@ class ${_pascal(name)}Screen extends StatelessWidget {
 }
 ''';
 
-String standardFeatureServiceTemplate(String name) => '''
+String standardFeatureServiceTemplate(String name) =>
+    '''
 class ${_pascal(name)}Service {
   Future<List<Map<String, dynamic>>> fetchItems() async {
     // TODO: implement API or local data source.
@@ -644,7 +715,8 @@ class ${_pascal(name)}Service {
 }
 ''';
 
-String standardFeatureProviderTemplate(String name) => '''
+String standardFeatureProviderTemplate(String name) =>
+    '''
 import 'package:flutter/foundation.dart';
 
 import '../services/${name}_service.dart';
@@ -670,7 +742,8 @@ class ${_pascal(name)}Provider extends ChangeNotifier {
 }
 ''';
 
-String standardFeatureModelTemplate(String name) => '''
+String standardFeatureModelTemplate(String name) =>
+    '''
 class ${_pascal(name)}Model {
   final String id;
   final String title;
@@ -681,7 +754,8 @@ class ${_pascal(name)}Model {
 
 // ── Feature templates (used by `feature` command) ──
 
-String featureEntityTemplate(String name) => '''
+String featureEntityTemplate(String name) =>
+    '''
 class ${_pascal(name)}Entity {
   final String id;
 
@@ -689,7 +763,8 @@ class ${_pascal(name)}Entity {
 }
 ''';
 
-String featureModelTemplate(String name) => '''
+String featureModelTemplate(String name) =>
+    '''
 import '../../domain/entities/${name}_entity.dart';
 
 class ${_pascal(name)}Model extends ${_pascal(name)}Entity {
@@ -703,7 +778,8 @@ class ${_pascal(name)}Model extends ${_pascal(name)}Entity {
 }
 ''';
 
-String featureRepositoryTemplate(String name) => '''
+String featureRepositoryTemplate(String name) =>
+    '''
 import '../entities/${name}_entity.dart';
 
 abstract class ${_pascal(name)}Repository {
@@ -712,7 +788,8 @@ abstract class ${_pascal(name)}Repository {
 }
 ''';
 
-String featureRepositoryImplTemplate(String name) => '''
+String featureRepositoryImplTemplate(String name) =>
+    '''
 import '../../domain/entities/${name}_entity.dart';
 import '../../domain/repositories/${name}_repository.dart';
 
@@ -731,20 +808,23 @@ class ${_pascal(name)}RepositoryImpl implements ${_pascal(name)}Repository {
 }
 ''';
 
-String featureRemoteDatasourceTemplate(String name) => '''
+String featureRemoteDatasourceTemplate(String name) =>
+    '''
 abstract class ${_pascal(name)}RemoteDatasource {
   Future<List<Map<String, dynamic>>> fetchAll();
 }
 ''';
 
-String featureLocalDatasourceTemplate(String name) => '''
+String featureLocalDatasourceTemplate(String name) =>
+    '''
 abstract class ${_pascal(name)}LocalDatasource {
   Future<void> cacheData(List<Map<String, dynamic>> data);
   Future<List<Map<String, dynamic>>> getCachedData();
 }
 ''';
 
-String featureUsecaseTemplate(String name) => '''
+String featureUsecaseTemplate(String name) =>
+    '''
 import '../../../../core/usecases/usecase.dart';
 import '../entities/${name}_entity.dart';
 import '../repositories/${name}_repository.dart';
@@ -761,7 +841,8 @@ class Get${_pascal(name)} implements UseCase<List<${_pascal(name)}Entity>, NoPar
 }
 ''';
 
-String featureBlocTemplate(String name) => '''
+String featureBlocTemplate(String name) =>
+    '''
 import '${name}_event.dart';
 import '${name}_state.dart';
 
@@ -776,13 +857,15 @@ class ${_pascal(name)}Bloc {
 }
 ''';
 
-String featureEventTemplate(String name) => '''
+String featureEventTemplate(String name) =>
+    '''
 abstract class ${_pascal(name)}Event {}
 
 class Load${_pascal(name)} extends ${_pascal(name)}Event {}
 ''';
 
-String featureStateTemplate(String name) => '''
+String featureStateTemplate(String name) =>
+    '''
 abstract class ${_pascal(name)}State {}
 
 class ${_pascal(name)}Initial extends ${_pascal(name)}State {}
@@ -800,7 +883,8 @@ class ${_pascal(name)}Error extends ${_pascal(name)}State {
 }
 ''';
 
-String featureScreenTemplate(String name) => '''
+String featureScreenTemplate(String name) =>
+    '''
 import 'package:flutter/material.dart';
 
 class ${_pascal(name)}Screen extends StatelessWidget {
@@ -816,7 +900,8 @@ class ${_pascal(name)}Screen extends StatelessWidget {
 }
 ''';
 
-String featureWidgetTemplate(String name) => '''
+String featureWidgetTemplate(String name) =>
+    '''
 import 'package:flutter/material.dart';
 
 class ${_pascal(name)}Card extends StatelessWidget {

@@ -10,11 +10,7 @@ import '../utils/logger.dart';
 void generateArchitecture() {
   logInfo("Initializing Clean Architecture...");
 
-  createDirectoryWithFile(
-    "lib/core/app",
-    "main_app.dart",
-    mainAppTemplate,
-  );
+  createDirectoryWithFile("lib/core/app", "main_app.dart", mainAppTemplate);
   createDirectoryWithFile(
     "lib/core/config",
     "app_config.dart",
@@ -107,6 +103,11 @@ void generateArchitecture() {
     apiServiceTemplate,
   );
   createDirectoryWithFile(
+    "lib/core/services",
+    "app_update_service.dart",
+    appUpdateServiceTemplate,
+  );
+  createDirectoryWithFile(
     "lib/core/shared/widgets",
     "custom_button.dart",
     customButtonTemplate,
@@ -168,6 +169,11 @@ void generateStandardArchitecture() {
     'lib/core/services',
     'app_service.dart',
     standardCoreServiceTemplate,
+  );
+  createDirectoryWithFile(
+    'lib/core/services',
+    'app_update_service.dart',
+    appUpdateServiceTemplate,
   );
   createDirectoryWithFile(
     'lib/core/theme',

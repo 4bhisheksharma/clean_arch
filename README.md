@@ -61,6 +61,46 @@ clean_arch init normal
 clean_arch normal init
 ```
 
+### Default packages
+
+`init` also runs `flutter pub add` to add these packages to your
+`pubspec.yaml`. No versions are pinned, so pub picks the latest versions
+compatible with your Flutter SDK:
+
+`flutter_bloc`, `flutter_svg`, `internet_connection_checker_plus`, `pinput`,
+`url_launcher`, `shimmer`, `nepali_date_picker`, `share_plus`, `path_provider`,
+`http_parser`, `image_picker`, `dio`, `file_picker`, `flutter_dotenv`,
+`socket_io_client`, `connectivity_plus`, `flutter_secure_storage`, `get_it`,
+`intl`, `equatable`, `latlong2`, `open_filex`, `shared_preferences`,
+`in_app_update`, `cached_network_image`
+
+If adding them all at once fails, each package is retried on its own and any
+that still fail are listed so you can add them manually. To scaffold without
+adding packages, pass `--no-deps`:
+
+```bash
+clean_arch init clean --no-deps
+clean_arch normal init --no-deps
+```
+
+> The generated `app_update_service.dart` imports `in_app_update`. If you use
+> `--no-deps`, run `flutter pub add in_app_update` yourself or delete that file.
+
+### In-app updates
+
+Both architectures generate `lib/core/services/app_update_service.dart`, which
+uses Google Play's in-app updates API (via `in_app_update`) to prompt users
+when a newer version is on the Play Store. It is already wired in:
+
+- **Clean Architecture:** `MainApp` calls
+  `AppUpdateService.instance.checkForUpdate()` after the first frame.
+- **Normal Folder Architecture:** `AppService.bootstrap()` calls it.
+
+By default the update downloads in the background (flexible update). For a
+blocking full-screen update, call `checkForUpdate(immediate: true)`. The check
+only runs on Android builds installed from the Play Store and does nothing on
+other platforms or in debug builds.
+
 You can check the version or print help at any time:
 
 ```bash
@@ -94,7 +134,7 @@ lib/
     platform/         → platform_info.dart
     router/           → app_router.dart
     security/         → security_service.dart
-    services/         → api_service.dart
+    services/         → api_service.dart, app_update_service.dart
     shared/
       widgets/        → custom_button.dart
     storage/          → local_storage.dart
@@ -120,6 +160,7 @@ lib/
       app_helper.dart
     services/
       app_service.dart
+      app_update_service.dart
     theme/
       app_theme.dart
     route/
@@ -247,6 +288,7 @@ See the [`example/`](example/main.dart) directory for a runnable sample.
 - Dart SDK `>=3.8.1`
 - Run from the **root of your Flutter project** so files are created at the
   correct `lib/` path.
+- The Flutter SDK on your `PATH` (used by `init` to run `flutter pub add`).
 
 ## Author
 

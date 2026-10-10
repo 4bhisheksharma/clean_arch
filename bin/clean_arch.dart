@@ -50,9 +50,15 @@ void main(List<String> args) {
   }
 }
 
+const String _noDepsFlag = '--no-deps';
+
 void _handleInit(List<String> args) {
-  final architectureType = args.length >= 2 ? args[1] : null;
-  runInit(architectureType: architectureType);
+  final positional = args.where((a) => a != _noDepsFlag).toList();
+  final architectureType = positional.length >= 2 ? positional[1] : null;
+  runInit(
+    architectureType: architectureType,
+    installDependencies: !args.contains(_noDepsFlag),
+  );
 }
 
 void _handleFeature(List<String> args) {
@@ -80,7 +86,7 @@ void _handleNormal(List<String> args) {
 
   switch (subCommand) {
     case 'init':
-      runNormalInit();
+      runNormalInit(installDependencies: !args.contains(_noDepsFlag));
       break;
     case 'feature':
       if (args.length < 3) {
@@ -121,10 +127,18 @@ bool _runFeatureChecked(String name, {String? architectureType}) {
 void _printUsage() {
   logInfo('clean_arch $packageVersion — Flutter project scaffolder\n');
   logInfo('Usage:');
-  logInfo('  clean_arch init [clean|normal]   Scaffold the core layer');
+  logInfo('  clean_arch init [clean|normal]   Scaffold the core layer and add');
+  logInfo('                                   the default packages');
   logInfo('  clean_arch normal init           Scaffold the normal core layer');
   logInfo('  clean_arch feature <name>        Generate a feature module');
-  logInfo('  clean_arch normal feature <name> Generate a normal feature module');
+  logInfo(
+    '  clean_arch normal feature <name> Generate a normal feature module',
+  );
   logInfo('  clean_arch help                  Show this help message');
   logInfo('  clean_arch version               Show the installed version');
+  logInfo('');
+  logInfo('Options:');
+  logInfo(
+    '  --no-deps   With init: skip `flutter pub add` of default packages',
+  );
 }

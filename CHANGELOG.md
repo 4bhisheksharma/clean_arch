@@ -1,3 +1,20 @@
+## 1.2.0
+
+- `init` now adds 25 commonly used packages to the project's `pubspec.yaml`
+  with `flutter pub add`, at their latest compatible versions (`flutter_bloc`,
+  `dio`, `get_it`, `flutter_secure_storage`, `in_app_update` and more). If
+  adding them all at once fails, each package is retried on its own and any
+  failures are reported.
+- New `--no-deps` flag for `init` / `normal init` to skip adding packages.
+- New `lib/core/services/app_update_service.dart` for Play Store in-app updates
+  in both architectures. It is wired into `MainApp` (Clean) and
+  `AppService.bootstrap()` (Normal).
+- `MainApp` template is now a `StatefulWidget` so it can run the update check.
+- `failures.dart` template now uses super parameters, so it passes
+  `flutter analyze` with no warnings.
+- `installDependencies` and `defaultDependencies` are exported for programmatic
+  use.
+
 ## 1.1.0
 
 - Expanded the **Clean Architecture** core scaffolding to generate all 22 standard core folders and starter files:

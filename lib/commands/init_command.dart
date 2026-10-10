@@ -1,24 +1,31 @@
 import 'dart:io';
 
 import '../generators/architecture_generator.dart';
+import '../generators/dependency_installer.dart' as deps;
 import '../utils/logger.dart';
 
-/// Runs the `init` command, scaffolding the Clean Architecture core layer
-/// inside the current working directory.
-void runInit({String? architectureType}) {
+/// Runs the `init` command, scaffolding the selected architecture inside the
+/// current working directory.
+///
+/// When [installDependencies] is `true` (the default), the packages in
+/// [deps.defaultDependencies] are added to the project with `flutter pub add`.
+void runInit({String? architectureType, bool installDependencies = true}) {
   final selectedArchitecture = _resolveArchitecture(architectureType);
 
   if (selectedArchitecture == _ArchitectureType.normal) {
     generateStandardArchitecture();
-    return;
+  } else {
+    generateArchitecture();
   }
 
-  generateArchitecture();
+  if (installDependencies) {
+    deps.installDependencies();
+  }
 }
 
 /// Runs the `normal init` command alias.
-void runNormalInit() {
-  runInit(architectureType: 'normal');
+void runNormalInit({bool installDependencies = true}) {
+  runInit(architectureType: 'normal', installDependencies: installDependencies);
 }
 
 _ArchitectureType _resolveArchitecture(String? architectureType) {
